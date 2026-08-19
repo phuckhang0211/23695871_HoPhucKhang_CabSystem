@@ -161,8 +161,14 @@ https://www.systemdesigninterview.com/guides/system-design-interview-handbook/89
 
 https://www.uber.com/nl/en/marketplace/matching/?utm_source=chatgpt.com
 
-## Bước 8: Business rules, exception
+## Bước 8: Business rules, exception.
 
-## Bước 9: Mô hình hóa dữ liệu (Xác định thực thể mô hình ERD)
+## Bước 9: Mô hình hóa dữ liệu (Xác định thực thể mô hình ERD).
 
-## Bước 10: Xác định các non-requirement, các yêu cầu không phải chức năng
+## Bước 10: Xác định các non-requirement, các yêu cầu không phải chức năng.
+
+## Bước 11: Vẽ sơ đồ use case, đặc tả use case.
+
+## Bước 12: Tiêu chí chấp nhận (AC).
+
+## Bước 13: Truy xuất nguồn gốc yêu cầu.
