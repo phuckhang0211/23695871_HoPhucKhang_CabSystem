@@ -1,0 +1,126 @@
+bookings:
+  post:
+    tags:
+      - Booking
+    summary: Tạo yêu cầu đặt xe
+    operationId: createBooking
+    x-fr:
+      - FR05
+
+    security:
+      - bearerAuth: []
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/booking.yaml#/CreateBookingRequest"
+
+    responses:
+      "201":
+        description: Tạo yêu cầu đặt xe thành công
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/booking.yaml#/Booking"
+
+      "400":
+        $ref: "../responses.yaml#/BadRequest"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+  get:
+    tags:
+      - Booking
+    summary: Danh sách yêu cầu đặt xe
+    operationId: getBookings
+    x-fr:
+      - FR07
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/Page"
+      - $ref: "../parameters.yaml#/Limit"
+
+    responses:
+      "200":
+        description: Danh sách đặt xe
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/booking.yaml#/BookingListResponse"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+bookings~1{bookingId}:
+  get:
+    tags:
+      - Booking
+    summary: Xem thông tin đặt xe
+    operationId: getBookingById
+    x-fr:
+      - FR06
+      - FR07
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/BookingId"
+
+    responses:
+      "200":
+        description: Chi tiết yêu cầu đặt xe
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/booking.yaml#/Booking"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "404":
+        $ref: "../responses.yaml#/NotFound"
+
+  patch:
+    tags:
+      - Booking
+    summary: Thay đổi yêu cầu đặt xe
+    operationId: updateBooking
+    x-fr:
+      - FR06
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/BookingId"
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/booking.yaml#/UpdateBookingRequest"
+
+    responses:
+      "200":
+        description: Cập nhật yêu cầu đặt xe thành công
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/booking.yaml#/Booking"
+
+      "400":
+        $ref: "../responses.yaml#/BadRequest"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "404":
+        $ref: "../responses.yaml#/NotFound"

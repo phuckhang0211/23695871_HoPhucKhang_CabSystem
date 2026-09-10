@@ -1,0 +1,70 @@
+Booking:
+  type: object
+  required:
+    - id
+    - customerId
+    - pickup
+    - destination
+    - status
+    - createdAt
+  properties:
+    id:
+      type: string
+      format: uuid
+    customerId:
+      type: string
+      format: uuid
+    pickup:
+      $ref: "./common.yaml#/Address"
+    destination:
+      $ref: "./common.yaml#/Address"
+    status:
+      type: string
+      enum:
+        - REQUESTED
+        - SEARCHING_DRIVER
+        - DRIVER_ASSIGNED
+        - ACCEPTED
+        - CANCELLED
+        - COMPLETED
+    note:
+      type: string
+    createdAt:
+      type: string
+      format: date-time
+    updatedAt:
+      type: string
+      format: date-time
+
+CreateBookingRequest:
+  type: object
+  required:
+    - pickup
+    - destination
+  properties:
+    pickup:
+      $ref: "./common.yaml#/Address"
+    destination:
+      $ref: "./common.yaml#/Address"
+    note:
+      type: string
+
+UpdateBookingRequest:
+  type: object
+  properties:
+    pickup:
+      $ref: "./common.yaml#/Address"
+    destination:
+      $ref: "./common.yaml#/Address"
+    note:
+      type: string
+
+BookingListResponse:
+  type: object
+  properties:
+    data:
+      type: array
+      items:
+        $ref: "#/Booking"
+    pagination:
+      $ref: "./common.yaml#/Pagination"

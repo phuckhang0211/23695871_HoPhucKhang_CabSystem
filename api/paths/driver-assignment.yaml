@@ -1,0 +1,136 @@
+bookings~1{bookingId}~1drivers:
+  get:
+    tags:
+      - Driver Assignment
+    summary: Tìm tài xế phù hợp
+    operationId: findAvailableDrivers
+    x-fr:
+      - FR08
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/BookingId"
+
+    responses:
+      "200":
+        description: Danh sách tài xế phù hợp
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/driver.yaml#/DriverListResponse"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "404":
+        $ref: "../responses.yaml#/NotFound"
+
+bookings~1{bookingId}~1assign:
+  post:
+    tags:
+      - Driver Assignment
+    summary: Phân công tài xế
+    operationId: assignDriver
+    x-fr:
+      - FR09
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/BookingId"
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/driver.yaml#/AssignDriverRequest"
+
+    responses:
+      "200":
+        description: Phân công thành công
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/trip.yaml#/Trip"
+
+      "400":
+        $ref: "../responses.yaml#/BadRequest"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "404":
+        $ref: "../responses.yaml#/NotFound"
+
+      "409":
+        $ref: "../responses.yaml#/Conflict"
+
+trips~1{tripId}~1accept:
+  post:
+    tags:
+      - Driver Assignment
+    summary: Tài xế nhận chuyến
+    operationId: acceptTrip
+    x-fr:
+      - FR10
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/TripId"
+
+    responses:
+      "200":
+        description: Tài xế đã nhận chuyến
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/trip.yaml#/Trip"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "404":
+        $ref: "../responses.yaml#/NotFound"
+
+      "409":
+        $ref: "../responses.yaml#/Conflict"
+
+trips~1{tripId}~1reject:
+  post:
+    tags:
+      - Driver Assignment
+    summary: Tài xế từ chối chuyến
+    description: |
+      Khi tài xế từ chối hoặc không phản hồi,
+      Backend có thể xử lý FR11 bằng business logic:
+      cập nhật trạng thái, tìm tài xế tiếp theo và gửi yêu cầu mới.
+    operationId: rejectTrip
+    x-fr:
+      - FR10
+      - FR11
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/TripId"
+
+    responses:
+      "200":
+        description: Từ chối chuyến thành công và Backend xử lý tiếp
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/trip.yaml#/Trip"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "404":
+        $ref: "../responses.yaml#/NotFound"

@@ -1,0 +1,55 @@
+notifications:
+  get:
+    tags:
+      - Notification
+    summary: Lấy danh sách thông báo
+    operationId: getNotifications
+    x-fr:
+      - FR18
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/Page"
+      - $ref: "../parameters.yaml#/Limit"
+
+    responses:
+      "200":
+        description: Danh sách thông báo
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/notification.yaml#/NotificationListResponse"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+notifications~1{notificationId}~1read:
+  patch:
+    tags:
+      - Notification
+    summary: Đánh dấu thông báo đã đọc
+    operationId: markNotificationAsRead
+    x-fr:
+      - FR18
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/NotificationId"
+
+    responses:
+      "200":
+        description: Đánh dấu thành công
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/notification.yaml#/Notification"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "404":
+        $ref: "../responses.yaml#/NotFound"

@@ -1,0 +1,49 @@
+Driver:
+  type: object
+  required:
+    - id
+    - name
+    - phone
+    - status
+  properties:
+    id:
+      type: string
+      format: uuid
+    name:
+      type: string
+    phone:
+      type: string
+    status:
+      type: string
+      enum:
+        - ONLINE
+        - OFFLINE
+        - BUSY
+    rating:
+      type: number
+      format: float
+      minimum: 0
+      maximum: 5
+    location:
+      $ref: "./common.yaml#/Location"
+    vehicle:
+      $ref: "./vehicle.yaml#/Vehicle"
+
+DriverListResponse:
+  type: object
+  properties:
+    data:
+      type: array
+      items:
+        $ref: "#/Driver"
+    pagination:
+      $ref: "./common.yaml#/Pagination"
+
+AssignDriverRequest:
+  type: object
+  required:
+    - driverId
+  properties:
+    driverId:
+      type: string
+      format: uuid

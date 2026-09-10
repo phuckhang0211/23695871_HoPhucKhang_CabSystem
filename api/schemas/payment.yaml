@@ -1,0 +1,83 @@
+Payment:
+  type: object
+  required:
+    - id
+    - tripId
+    - amount
+    - method
+    - status
+  properties:
+    id:
+      type: string
+      format: uuid
+    tripId:
+      type: string
+      format: uuid
+    amount:
+      type: number
+      format: double
+    method:
+      type: string
+      enum:
+        - CASH
+        - ELECTRONIC
+    status:
+      type: string
+      enum:
+        - PENDING
+        - SUCCESS
+        - FAILED
+        - RETRY
+    transactionId:
+      type: string
+      nullable: true
+    paidAt:
+      type: string
+      format: date-time
+      nullable: true
+
+CreatePaymentRequest:
+  type: object
+  required:
+    - method
+  properties:
+    method:
+      type: string
+      enum:
+        - CASH
+        - ELECTRONIC
+
+FareResponse:
+  type: object
+  properties:
+    tripId:
+      type: string
+      format: uuid
+    amount:
+      type: number
+      format: double
+    currency:
+      type: string
+      example: VND
+
+PaymentHistoryResponse:
+  type: object
+  properties:
+    data:
+      type: array
+      items:
+        $ref: "#/Payment"
+    pagination:
+      $ref: "./common.yaml#/Pagination"
+
+RevenueReportResponse:
+  type: object
+  properties:
+    totalRevenue:
+      type: number
+      format: double
+    totalPayments:
+      type: integer
+    currency:
+      type: string
+      example: VND

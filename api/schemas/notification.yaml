@@ -1,0 +1,37 @@
+Notification:
+  type: object
+  required:
+    - id
+    - userId
+    - title
+    - message
+    - isRead
+    - createdAt
+  properties:
+    id:
+      type: string
+      format: uuid
+    userId:
+      type: string
+      format: uuid
+    title:
+      type: string
+    message:
+      type: string
+    type:
+      type: string
+    isRead:
+      type: boolean
+    createdAt:
+      type: string
+      format: date-time
+
+NotificationListResponse:
+  type: object
+  properties:
+    data:
+      type: array
+      items:
+        $ref: "#/Notification"
+    pagination:
+      $ref: "./common.yaml#/Pagination"

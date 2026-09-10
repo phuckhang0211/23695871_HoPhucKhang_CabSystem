@@ -1,0 +1,162 @@
+admin~1customers:
+  get:
+    tags:
+      - Operation
+    summary: Quản lý khách hàng
+    operationId: getCustomers
+    x-fr:
+      - FR20
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/Page"
+      - $ref: "../parameters.yaml#/Limit"
+
+    responses:
+      "200":
+        description: Danh sách khách hàng
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/user.yaml#/CustomerListResponse"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "403":
+        $ref: "../responses.yaml#/Forbidden"
+
+admin~1drivers:
+  get:
+    tags:
+      - Operation
+    summary: Quản lý tài xế
+    operationId: getDrivers
+    x-fr:
+      - FR21
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/Page"
+      - $ref: "../parameters.yaml#/Limit"
+
+    responses:
+      "200":
+        description: Danh sách tài xế
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/driver.yaml#/DriverListResponse"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "403":
+        $ref: "../responses.yaml#/Forbidden"
+
+admin~1vehicles:
+  get:
+    tags:
+      - Operation
+    summary: Quản lý phương tiện
+    operationId: getVehicles
+    x-fr:
+      - FR22
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/Page"
+      - $ref: "../parameters.yaml#/Limit"
+
+    responses:
+      "200":
+        description: Danh sách phương tiện
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/vehicle.yaml#/VehicleListResponse"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "403":
+        $ref: "../responses.yaml#/Forbidden"
+
+admin~1trips:
+  get:
+    tags:
+      - Operation
+    summary: Theo dõi và điều phối chuyến xe
+    operationId: getAdminTrips
+    x-fr:
+      - FR23
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/Page"
+      - $ref: "../parameters.yaml#/Limit"
+
+    responses:
+      "200":
+        description: Danh sách chuyến xe
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/trip.yaml#/TripListResponse"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "403":
+        $ref: "../responses.yaml#/Forbidden"
+
+admin~1trips~1{tripId}:
+  patch:
+    tags:
+      - Operation
+    summary: Điều chỉnh nghiệp vụ chuyến xe
+    operationId: updateAdminTrip
+    x-fr:
+      - FR23
+      - FR24
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/TripId"
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/trip.yaml#/AdminUpdateTripRequest"
+
+    responses:
+      "200":
+        description: Cập nhật thành công
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/trip.yaml#/Trip"
+
+      "400":
+        $ref: "../responses.yaml#/BadRequest"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "403":
+        $ref: "../responses.yaml#/Forbidden"
+
+      "404":
+        $ref: "../responses.yaml#/NotFound"

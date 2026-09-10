@@ -1,0 +1,100 @@
+trips~1{tripId}~1fare:
+  get:
+    tags:
+      - Payment
+    summary: Tính và hiển thị giá chuyến
+    operationId: getTripFare
+    x-fr:
+      - FR14
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/TripId"
+
+    responses:
+      "200":
+        description: Giá chuyến
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/payment.yaml#/FareResponse"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "404":
+        $ref: "../responses.yaml#/NotFound"
+
+trips~1{tripId}~1payments:
+  post:
+    tags:
+      - Payment
+    summary: Tạo thanh toán cho chuyến xe
+    operationId: createPayment
+    x-fr:
+      - FR15
+      - FR16
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/TripId"
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/payment.yaml#/CreatePaymentRequest"
+
+    responses:
+      "201":
+        description: Tạo thanh toán thành công
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/payment.yaml#/Payment"
+
+      "400":
+        $ref: "../responses.yaml#/BadRequest"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "404":
+        $ref: "../responses.yaml#/NotFound"
+
+      "409":
+        $ref: "../responses.yaml#/Conflict"
+
+payments~1{paymentId}:
+  get:
+    tags:
+      - Payment
+    summary: Xem kết quả thanh toán
+    operationId: getPaymentById
+    x-fr:
+      - FR17
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/PaymentId"
+
+    responses:
+      "200":
+        description: Thông tin thanh toán
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/payment.yaml#/Payment"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "404":
+        $ref: "../responses.yaml#/NotFound"

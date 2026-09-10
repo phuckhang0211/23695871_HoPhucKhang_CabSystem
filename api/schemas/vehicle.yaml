@@ -1,0 +1,50 @@
+Vehicle:
+  type: object
+  required:
+    - id
+    - driverId
+    - licensePlate
+    - type
+    - status
+  properties:
+    id:
+      type: string
+      format: uuid
+    driverId:
+      type: string
+      format: uuid
+    licensePlate:
+      type: string
+    type:
+      type: string
+    brand:
+      type: string
+    model:
+      type: string
+    status:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+
+UpdateVehicleRequest:
+  type: object
+  properties:
+    licensePlate:
+      type: string
+    type:
+      type: string
+    brand:
+      type: string
+    model:
+      type: string
+
+VehicleListResponse:
+  type: object
+  properties:
+    data:
+      type: array
+      items:
+        $ref: "#/Vehicle"
+    pagination:
+      $ref: "./common.yaml#/Pagination"

@@ -1,0 +1,56 @@
+BookingId:
+  name: bookingId
+  in: path
+  required: true
+  description: ID của yêu cầu đặt xe
+  schema:
+    type: string
+    format: uuid
+
+TripId:
+  name: tripId
+  in: path
+  required: true
+  description: ID của chuyến xe
+  schema:
+    type: string
+    format: uuid
+
+PaymentId:
+  name: paymentId
+  in: path
+  required: true
+  description: ID của giao dịch thanh toán
+  schema:
+    type: string
+    format: uuid
+
+NotificationId:
+  name: notificationId
+  in: path
+  required: true
+  description: ID của thông báo
+  schema:
+    type: string
+    format: uuid
+
+Page:
+  name: page
+  in: query
+  required: false
+  description: Số trang
+  schema:
+    type: integer
+    minimum: 1
+    default: 1
+
+Limit:
+  name: limit
+  in: query
+  required: false
+  description: Số lượng bản ghi mỗi trang
+  schema:
+    type: integer
+    minimum: 1
+    maximum: 100
+    default: 20

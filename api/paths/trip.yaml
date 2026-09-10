@@ -1,0 +1,101 @@
+trips~1{tripId}:
+  get:
+    tags:
+      - Trip
+    summary: Xem thông tin chuyến xe
+    operationId: getTripById
+    x-fr:
+      - FR12
+      - FR13
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/TripId"
+
+    responses:
+      "200":
+        description: Chi tiết chuyến xe
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/trip.yaml#/Trip"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "404":
+        $ref: "../responses.yaml#/NotFound"
+
+trips~1{tripId}~1status:
+  patch:
+    tags:
+      - Trip
+    summary: Cập nhật trạng thái chuyến xe
+    operationId: updateTripStatus
+    x-fr:
+      - FR12
+      - FR13
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/TripId"
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/trip.yaml#/UpdateTripStatusRequest"
+
+    responses:
+      "200":
+        description: Cập nhật trạng thái thành công
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/trip.yaml#/Trip"
+
+      "400":
+        $ref: "../responses.yaml#/BadRequest"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "404":
+        $ref: "../responses.yaml#/NotFound"
+
+      "409":
+        $ref: "../responses.yaml#/Conflict"
+
+trips~1{tripId}~1location:
+  get:
+    tags:
+      - Trip
+    summary: Theo dõi vị trí chuyến xe
+    operationId: getTripLocation
+    x-fr:
+      - FR13
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/TripId"
+
+    responses:
+      "200":
+        description: Vị trí hiện tại của chuyến xe
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/common.yaml#/Location"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "404":
+        $ref: "../responses.yaml#/NotFound"

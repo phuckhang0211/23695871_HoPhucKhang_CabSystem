@@ -1,0 +1,112 @@
+users/me:
+  get:
+    tags:
+      - Profile
+    summary: Xem thông tin cá nhân
+    operationId: getMyProfile
+    x-fr:
+      - FR03
+
+    security:
+      - bearerAuth: []
+
+    responses:
+      "200":
+        description: Thông tin người dùng
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/user.yaml#/User"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+  put:
+    tags:
+      - Profile
+    summary: Cập nhật thông tin cá nhân
+    operationId: updateMyProfile
+    x-fr:
+      - FR03
+
+    security:
+      - bearerAuth: []
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/user.yaml#/UpdateProfileRequest"
+
+    responses:
+      "200":
+        description: Cập nhật thành công
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/user.yaml#/User"
+
+      "400":
+        $ref: "../responses.yaml#/BadRequest"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+drivers/me/vehicle:
+  get:
+    tags:
+      - Profile
+    summary: Xem thông tin phương tiện
+    operationId: getMyVehicle
+    x-fr:
+      - FR04
+
+    security:
+      - bearerAuth: []
+
+    responses:
+      "200":
+        description: Thông tin phương tiện
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/vehicle.yaml#/Vehicle"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "404":
+        $ref: "../responses.yaml#/NotFound"
+
+  put:
+    tags:
+      - Profile
+    summary: Cập nhật thông tin phương tiện
+    operationId: updateMyVehicle
+    x-fr:
+      - FR04
+
+    security:
+      - bearerAuth: []
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/vehicle.yaml#/UpdateVehicleRequest"
+
+    responses:
+      "200":
+        description: Cập nhật thành công
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/vehicle.yaml#/Vehicle"
+
+      "400":
+        $ref: "../responses.yaml#/BadRequest"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"

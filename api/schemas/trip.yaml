@@ -1,0 +1,93 @@
+Trip:
+  type: object
+  required:
+    - id
+    - bookingId
+    - status
+  properties:
+    id:
+      type: string
+      format: uuid
+    bookingId:
+      type: string
+      format: uuid
+    driverId:
+      type: string
+      format: uuid
+    status:
+      type: string
+      enum:
+        - ASSIGNED
+        - DRIVER_ARRIVING
+        - IN_PROGRESS
+        - COMPLETED
+        - CANCELLED
+    startedAt:
+      type: string
+      format: date-time
+      nullable: true
+    completedAt:
+      type: string
+      format: date-time
+      nullable: true
+    currentLocation:
+      $ref: "./common.yaml#/Location"
+
+UpdateTripStatusRequest:
+  type: object
+  required:
+    - status
+  properties:
+    status:
+      type: string
+      enum:
+        - ASSIGNED
+        - DRIVER_ARRIVING
+        - IN_PROGRESS
+        - COMPLETED
+        - CANCELLED
+
+AdminUpdateTripRequest:
+  type: object
+  properties:
+    status:
+      type: string
+      enum:
+        - ASSIGNED
+        - DRIVER_ARRIVING
+        - IN_PROGRESS
+        - COMPLETED
+        - CANCELLED
+    driverId:
+      type: string
+      format: uuid
+
+TripListResponse:
+  type: object
+  properties:
+    data:
+      type: array
+      items:
+        $ref: "#/Trip"
+    pagination:
+      $ref: "./common.yaml#/Pagination"
+
+TripHistoryResponse:
+  type: object
+  properties:
+    data:
+      type: array
+      items:
+        $ref: "#/Trip"
+    pagination:
+      $ref: "./common.yaml#/Pagination"
+
+TripReportResponse:
+  type: object
+  properties:
+    totalTrips:
+      type: integer
+    completedTrips:
+      type: integer
+    cancelledTrips:
+      type: integer

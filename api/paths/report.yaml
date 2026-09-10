@@ -1,0 +1,113 @@
+history~1trips:
+  get:
+    tags:
+      - Report
+    summary: Tra cứu lịch sử chuyến xe
+    operationId: getTripHistory
+    x-fr:
+      - FR25
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/Page"
+      - $ref: "../parameters.yaml#/Limit"
+
+    responses:
+      "200":
+        description: Lịch sử chuyến xe
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/trip.yaml#/TripHistoryResponse"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+history~1payments:
+  get:
+    tags:
+      - Report
+    summary: Tra cứu lịch sử thanh toán
+    operationId: getPaymentHistory
+    x-fr:
+      - FR25
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/Page"
+      - $ref: "../parameters.yaml#/Limit"
+
+    responses:
+      "200":
+        description: Lịch sử thanh toán
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/payment.yaml#/PaymentHistoryResponse"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+reports~1trips:
+  get:
+    tags:
+      - Report
+    summary: Báo cáo chuyến xe
+    operationId: getTripReport
+    x-fr:
+      - FR26
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/Page"
+      - $ref: "../parameters.yaml#/Limit"
+
+    responses:
+      "200":
+        description: Báo cáo chuyến xe
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/trip.yaml#/TripReportResponse"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "403":
+        $ref: "../responses.yaml#/Forbidden"
+
+reports~1revenue:
+  get:
+    tags:
+      - Report
+    summary: Báo cáo doanh thu
+    operationId: getRevenueReport
+    x-fr:
+      - FR26
+
+    security:
+      - bearerAuth: []
+
+    parameters:
+      - $ref: "../parameters.yaml#/Page"
+      - $ref: "../parameters.yaml#/Limit"
+
+    responses:
+      "200":
+        description: Báo cáo doanh thu
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/payment.yaml#/RevenueReportResponse"
+
+      "401":
+        $ref: "../responses.yaml#/Unauthorized"
+
+      "403":
+        $ref: "../responses.yaml#/Forbidden"

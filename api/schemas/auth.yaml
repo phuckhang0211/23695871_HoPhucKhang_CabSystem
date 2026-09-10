@@ -1,0 +1,73 @@
+RegisterRequest:
+  type: object
+
+  required:
+    - name
+    - phone
+    - email
+    - password
+    - role
+
+  properties:
+    name:
+      type: string
+
+    phone:
+      type: string
+
+    email:
+      type: string
+      format: email
+
+    password:
+      type: string
+      format: password
+
+    role:
+      type: string
+      enum:
+        - CUSTOMER
+        - DRIVER
+
+LoginRequest:
+  type: object
+
+  required:
+    - email
+    - password
+
+  properties:
+    email:
+      type: string
+      format: email
+
+    password:
+      type: string
+      format: password
+
+RegisterResponse:
+  type: object
+
+  properties:
+    message:
+      type: string
+
+    user:
+      $ref: "./user.yaml#/User"
+
+    accessToken:
+      type: string
+
+LoginResponse:
+  type: object
+
+  properties:
+    accessToken:
+      type: string
+
+    tokenType:
+      type: string
+      example: Bearer
+
+    user:
+      $ref: "./user.yaml#/User"

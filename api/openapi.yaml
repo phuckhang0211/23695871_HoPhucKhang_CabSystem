@@ -1,0 +1,1225 @@
+openapi: 3.0.3
+
+info:
+  title: CAB System API
+  description: |
+    REST API cho hệ thống CAB System.
+    API được tổ chức theo các module nghiệp vụ.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local development server
+
+  - url: https://api.cab-system.com/api/v1
+    description: Production server
+
+tags:
+  - name: Auth
+    description: Tài khoản và xác thực
+
+  - name: Profile
+    description: Thông tin cá nhân và phương tiện
+
+  - name: Booking
+    description: Đặt xe
+
+  - name: Driver Assignment
+    description: Tìm kiếm và phân công tài xế
+
+  - name: Trip
+    description: Thực hiện và theo dõi chuyến xe
+
+  - name: Payment
+    description: Giá chuyến và thanh toán
+
+  - name: Notification
+    description: Thông báo
+
+  - name: Rating
+    description: Đánh giá
+
+  - name: Operation
+    description: Vận hành hệ thống
+
+  - name: Report
+    description: Lịch sử và báo cáo
+
+paths:
+  # ============================================================
+  # AUTH
+  # ============================================================
+
+  /auth/register:
+    $ref: "./paths/auth.yaml#/register"
+
+  /auth/login:
+    $ref: "./paths/auth.yaml#/login"
+
+  /auth/logout:
+    $ref: "./paths/auth.yaml#/logout"
+
+  # ============================================================
+  # PROFILE
+  # ============================================================
+
+  /users/me:
+    get:
+      tags:
+        - Profile
+
+      summary: Xem thông tin cá nhân
+
+      operationId: getMyProfile
+
+      x-fr:
+        - FR03
+
+      security:
+        - bearerAuth: []
+
+      responses:
+        "200":
+          description: Thông tin cá nhân
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/user.yaml#/User"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+    put:
+      tags:
+        - Profile
+
+      summary: Cập nhật thông tin cá nhân
+
+      operationId: updateMyProfile
+
+      x-fr:
+        - FR03
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/user.yaml#/UpdateProfileRequest"
+
+      responses:
+        "200":
+          description: Cập nhật thành công
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/user.yaml#/User"
+
+        "400":
+          $ref: "./responses.yaml#/BadRequest"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+  /drivers/me/vehicle:
+    get:
+      tags:
+        - Profile
+
+      summary: Xem thông tin phương tiện
+
+      operationId: getMyVehicle
+
+      x-fr:
+        - FR04
+
+      security:
+        - bearerAuth: []
+
+      responses:
+        "200":
+          description: Thông tin phương tiện
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/vehicle.yaml#/Vehicle"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+    put:
+      tags:
+        - Profile
+
+      summary: Cập nhật thông tin phương tiện
+
+      operationId: updateMyVehicle
+
+      x-fr:
+        - FR04
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/vehicle.yaml#/UpdateVehicleRequest"
+
+      responses:
+        "200":
+          description: Cập nhật thành công
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/vehicle.yaml#/Vehicle"
+
+        "400":
+          $ref: "./responses.yaml#/BadRequest"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+  # ============================================================
+  # BOOKING
+  # ============================================================
+
+  /bookings:
+    post:
+      tags:
+        - Booking
+
+      summary: Tạo yêu cầu đặt xe
+
+      operationId: createBooking
+
+      x-fr:
+        - FR05
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/booking.yaml#/CreateBookingRequest"
+
+      responses:
+        "201":
+          description: Tạo yêu cầu đặt xe thành công
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/booking.yaml#/Booking"
+
+        "400":
+          $ref: "./responses.yaml#/BadRequest"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+    get:
+      tags:
+        - Booking
+
+      summary: Danh sách yêu cầu đặt xe
+
+      operationId: getBookings
+
+      x-fr:
+        - FR07
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/Page"
+
+        - $ref: "./parameters.yaml#/Limit"
+
+      responses:
+        "200":
+          description: Danh sách đặt xe
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/booking.yaml#/BookingListResponse"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+  /bookings/{bookingId}:
+    get:
+      tags:
+        - Booking
+
+      summary: Xem thông tin đặt xe
+
+      operationId: getBookingById
+
+      x-fr:
+        - FR06
+        - FR07
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/BookingId"
+
+      responses:
+        "200":
+          description: Chi tiết yêu cầu đặt xe
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/booking.yaml#/Booking"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+    patch:
+      tags:
+        - Booking
+
+      summary: Thay đổi yêu cầu đặt xe
+
+      operationId: updateBooking
+
+      x-fr:
+        - FR06
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/BookingId"
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/booking.yaml#/UpdateBookingRequest"
+
+      responses:
+        "200":
+          description: Cập nhật thành công
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/booking.yaml#/Booking"
+
+        "400":
+          $ref: "./responses.yaml#/BadRequest"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+  # ============================================================
+  # DRIVER ASSIGNMENT
+  # ============================================================
+
+  /bookings/{bookingId}/drivers:
+    get:
+      tags:
+        - Driver Assignment
+
+      summary: Tìm tài xế phù hợp
+
+      operationId: findAvailableDrivers
+
+      x-fr:
+        - FR08
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/BookingId"
+
+      responses:
+        "200":
+          description: Danh sách tài xế phù hợp
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/driver.yaml#/DriverListResponse"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+  /bookings/{bookingId}/assign:
+    post:
+      tags:
+        - Driver Assignment
+
+      summary: Phân công tài xế
+
+      operationId: assignDriver
+
+      x-fr:
+        - FR09
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/BookingId"
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/driver.yaml#/AssignDriverRequest"
+
+      responses:
+        "200":
+          description: Phân công thành công
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/trip.yaml#/Trip"
+
+        "400":
+          $ref: "./responses.yaml#/BadRequest"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+        "409":
+          $ref: "./responses.yaml#/Conflict"
+
+  /trips/{tripId}/accept:
+    post:
+      tags:
+        - Driver Assignment
+
+      summary: Tài xế nhận chuyến
+
+      operationId: acceptTrip
+
+      x-fr:
+        - FR10
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/TripId"
+
+      responses:
+        "200":
+          description: Tài xế đã nhận chuyến
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/trip.yaml#/Trip"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+        "409":
+          $ref: "./responses.yaml#/Conflict"
+
+  /trips/{tripId}/reject:
+    post:
+      tags:
+        - Driver Assignment
+
+      summary: Tài xế từ chối chuyến
+
+      operationId: rejectTrip
+
+      x-fr:
+        - FR10
+        - FR11
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/TripId"
+
+      responses:
+        "200":
+          description: Từ chối chuyến
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/trip.yaml#/Trip"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+  # ============================================================
+  # TRIP
+  # ============================================================
+
+  /trips/{tripId}:
+    get:
+      tags:
+        - Trip
+
+      summary: Xem thông tin chuyến xe
+
+      operationId: getTripById
+
+      x-fr:
+        - FR12
+        - FR13
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/TripId"
+
+      responses:
+        "200":
+          description: Chi tiết chuyến xe
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/trip.yaml#/Trip"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+  /trips/{tripId}/status:
+    patch:
+      tags:
+        - Trip
+
+      summary: Cập nhật trạng thái chuyến xe
+
+      operationId: updateTripStatus
+
+      x-fr:
+        - FR12
+        - FR13
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/TripId"
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/trip.yaml#/UpdateTripStatusRequest"
+
+      responses:
+        "200":
+          description: Cập nhật trạng thái thành công
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/trip.yaml#/Trip"
+
+        "400":
+          $ref: "./responses.yaml#/BadRequest"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+        "409":
+          $ref: "./responses.yaml#/Conflict"
+
+  /trips/{tripId}/location:
+    get:
+      tags:
+        - Trip
+
+      summary: Theo dõi vị trí chuyến xe
+
+      operationId: getTripLocation
+
+      x-fr:
+        - FR13
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/TripId"
+
+      responses:
+        "200":
+          description: Vị trí hiện tại
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/common.yaml#/Location"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+  # ============================================================
+  # PAYMENT
+  # ============================================================
+
+  /trips/{tripId}/fare:
+    get:
+      tags:
+        - Payment
+
+      summary: Tính và hiển thị giá chuyến
+
+      operationId: getTripFare
+
+      x-fr:
+        - FR14
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/TripId"
+
+      responses:
+        "200":
+          description: Giá chuyến
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/payment.yaml#/FareResponse"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+  /trips/{tripId}/payments:
+    post:
+      tags:
+        - Payment
+
+      summary: Tạo thanh toán
+
+      operationId: createPayment
+
+      x-fr:
+        - FR15
+        - FR16
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/TripId"
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/payment.yaml#/CreatePaymentRequest"
+
+      responses:
+        "201":
+          description: Tạo thanh toán thành công
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/payment.yaml#/Payment"
+
+        "400":
+          $ref: "./responses.yaml#/BadRequest"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+        "409":
+          $ref: "./responses.yaml#/Conflict"
+
+  /payments/{paymentId}:
+    get:
+      tags:
+        - Payment
+
+      summary: Xem kết quả thanh toán
+
+      operationId: getPaymentById
+
+      x-fr:
+        - FR17
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/PaymentId"
+
+      responses:
+        "200":
+          description: Thông tin thanh toán
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/payment.yaml#/Payment"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+  # ============================================================
+  # NOTIFICATION
+  # ============================================================
+
+  /notifications:
+    get:
+      tags:
+        - Notification
+
+      summary: Lấy danh sách thông báo
+
+      operationId: getNotifications
+
+      x-fr:
+        - FR18
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/Page"
+
+        - $ref: "./parameters.yaml#/Limit"
+
+      responses:
+        "200":
+          description: Danh sách thông báo
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/notification.yaml#/NotificationListResponse"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+  /notifications/{notificationId}/read:
+    patch:
+      tags:
+        - Notification
+
+      summary: Đánh dấu thông báo đã đọc
+
+      operationId: markNotificationAsRead
+
+      x-fr:
+        - FR18
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/NotificationId"
+
+      responses:
+        "200":
+          description: Đánh dấu thành công
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/notification.yaml#/Notification"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+  # ============================================================
+  # RATING
+  # ============================================================
+
+  /trips/{tripId}/rating:
+    post:
+      tags:
+        - Rating
+
+      summary: Đánh giá chuyến xe
+
+      operationId: createTripRating
+
+      x-fr:
+        - FR19
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/TripId"
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/rating.yaml#/CreateRatingRequest"
+
+      responses:
+        "201":
+          description: Đánh giá thành công
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/rating.yaml#/Rating"
+
+        "400":
+          $ref: "./responses.yaml#/BadRequest"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+        "409":
+          $ref: "./responses.yaml#/Conflict"
+
+    get:
+      tags:
+        - Rating
+
+      summary: Xem đánh giá chuyến xe
+
+      operationId: getTripRating
+
+      x-fr:
+        - FR19
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/TripId"
+
+      responses:
+        "200":
+          description: Đánh giá của chuyến xe
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/rating.yaml#/Rating"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+  # ============================================================
+  # OPERATION
+  # ============================================================
+
+  /admin/customers:
+    get:
+      tags:
+        - Operation
+
+      summary: Quản lý khách hàng
+
+      operationId: getCustomers
+
+      x-fr:
+        - FR20
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/Page"
+
+        - $ref: "./parameters.yaml#/Limit"
+
+      responses:
+        "200":
+          description: Danh sách khách hàng
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/user.yaml#/CustomerListResponse"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "403":
+          $ref: "./responses.yaml#/Forbidden"
+
+  /admin/drivers:
+    get:
+      tags:
+        - Operation
+
+      summary: Quản lý tài xế
+
+      operationId: getDrivers
+
+      x-fr:
+        - FR21
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/Page"
+
+        - $ref: "./parameters.yaml#/Limit"
+
+      responses:
+        "200":
+          description: Danh sách tài xế
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/driver.yaml#/DriverListResponse"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "403":
+          $ref: "./responses.yaml#/Forbidden"
+
+  /admin/vehicles:
+    get:
+      tags:
+        - Operation
+
+      summary: Quản lý phương tiện
+
+      operationId: getVehicles
+
+      x-fr:
+        - FR22
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/Page"
+
+        - $ref: "./parameters.yaml#/Limit"
+
+      responses:
+        "200":
+          description: Danh sách phương tiện
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/vehicle.yaml#/VehicleListResponse"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "403":
+          $ref: "./responses.yaml#/Forbidden"
+
+  /admin/trips:
+    get:
+      tags:
+        - Operation
+
+      summary: Theo dõi và điều phối chuyến xe
+
+      operationId: getAdminTrips
+
+      x-fr:
+        - FR23
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/Page"
+
+        - $ref: "./parameters.yaml#/Limit"
+
+      responses:
+        "200":
+          description: Danh sách chuyến xe
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/trip.yaml#/TripListResponse"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "403":
+          $ref: "./responses.yaml#/Forbidden"
+
+  /admin/trips/{tripId}:
+    patch:
+      tags:
+        - Operation
+
+      summary: Điều chỉnh nghiệp vụ chuyến xe
+
+      operationId: updateAdminTrip
+
+      x-fr:
+        - FR23
+        - FR24
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/TripId"
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/trip.yaml#/AdminUpdateTripRequest"
+
+      responses:
+        "200":
+          description: Cập nhật thành công
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/trip.yaml#/Trip"
+
+        "400":
+          $ref: "./responses.yaml#/BadRequest"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "403":
+          $ref: "./responses.yaml#/Forbidden"
+
+        "404":
+          $ref: "./responses.yaml#/NotFound"
+
+  # ============================================================
+  # REPORT
+  # ============================================================
+
+  /history/trips:
+    get:
+      tags:
+        - Report
+
+      summary: Tra cứu lịch sử chuyến xe
+
+      operationId: getTripHistory
+
+      x-fr:
+        - FR25
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/Page"
+
+        - $ref: "./parameters.yaml#/Limit"
+
+      responses:
+        "200":
+          description: Lịch sử chuyến xe
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/trip.yaml#/TripHistoryResponse"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+  /history/payments:
+    get:
+      tags:
+        - Report
+
+      summary: Tra cứu lịch sử thanh toán
+
+      operationId: getPaymentHistory
+
+      x-fr:
+        - FR25
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/Page"
+
+        - $ref: "./parameters.yaml#/Limit"
+
+      responses:
+        "200":
+          description: Lịch sử thanh toán
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/payment.yaml#/PaymentHistoryResponse"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+  /reports/trips:
+    get:
+      tags:
+        - Report
+
+      summary: Báo cáo chuyến xe
+
+      operationId: getTripReport
+
+      x-fr:
+        - FR26
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/Page"
+
+        - $ref: "./parameters.yaml#/Limit"
+
+      responses:
+        "200":
+          description: Báo cáo chuyến xe
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/trip.yaml#/TripReportResponse"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "403":
+          $ref: "./responses.yaml#/Forbidden"
+
+  /reports/revenue:
+    get:
+      tags:
+        - Report
+
+      summary: Báo cáo doanh thu
+
+      operationId: getRevenueReport
+
+      x-fr:
+        - FR26
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "./parameters.yaml#/Page"
+
+        - $ref: "./parameters.yaml#/Limit"
+
+      responses:
+        "200":
+          description: Báo cáo doanh thu
+
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/payment.yaml#/RevenueReportResponse"
+
+        "401":
+          $ref: "./responses.yaml#/Unauthorized"
+
+        "403":
+          $ref: "./responses.yaml#/Forbidden"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

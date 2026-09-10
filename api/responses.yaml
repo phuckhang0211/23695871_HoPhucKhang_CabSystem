@@ -1,0 +1,41 @@
+BadRequest:
+  description: Request không hợp lệ
+  content:
+    application/json:
+      schema:
+        $ref: "./schemas/common.yaml#/ErrorResponse"
+
+Unauthorized:
+  description: Người dùng chưa được xác thực
+  content:
+    application/json:
+      schema:
+        $ref: "./schemas/common.yaml#/ErrorResponse"
+
+Forbidden:
+  description: Người dùng không có quyền thực hiện thao tác
+  content:
+    application/json:
+      schema:
+        $ref: "./schemas/common.yaml#/ErrorResponse"
+
+NotFound:
+  description: Không tìm thấy resource
+  content:
+    application/json:
+      schema:
+        $ref: "./schemas/common.yaml#/ErrorResponse"
+
+Conflict:
+  description: Xung đột nghiệp vụ hoặc trạng thái resource
+  content:
+    application/json:
+      schema:
+        $ref: "./schemas/common.yaml#/ErrorResponse"
+
+InternalServerError:
+  description: Lỗi hệ thống
+  content:
+    application/json:
+      schema:
+        $ref: "./schemas/common.yaml#/ErrorResponse"

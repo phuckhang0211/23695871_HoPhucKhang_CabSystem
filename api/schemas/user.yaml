@@ -1,0 +1,55 @@
+User:
+  type: object
+  required:
+    - id
+    - name
+    - phone
+    - role
+  properties:
+    id:
+      type: string
+      format: uuid
+    name:
+      type: string
+    phone:
+      type: string
+    email:
+      type: string
+      format: email
+    role:
+      type: string
+      enum:
+        - CUSTOMER
+        - DRIVER
+        - OPERATION_STAFF
+    status:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+
+Customer:
+  allOf:
+    - $ref: "#/User"
+    - type: object
+
+UpdateProfileRequest:
+  type: object
+  properties:
+    name:
+      type: string
+    phone:
+      type: string
+    email:
+      type: string
+      format: email
+
+CustomerListResponse:
+  type: object
+  properties:
+    data:
+      type: array
+      items:
+        $ref: "#/Customer"
+    pagination:
+      $ref: "./common.yaml#/Pagination"

@@ -1,0 +1,66 @@
+Address:
+  type: object
+  required:
+    - address
+  properties:
+    address:
+      type: string
+    latitude:
+      type: number
+      format: double
+    longitude:
+      type: number
+      format: double
+
+Location:
+  type: object
+  required:
+    - latitude
+    - longitude
+  properties:
+    latitude:
+      type: number
+      format: double
+    longitude:
+      type: number
+      format: double
+    timestamp:
+      type: string
+      format: date-time
+
+Pagination:
+  type: object
+  properties:
+    page:
+      type: integer
+      minimum: 1
+    limit:
+      type: integer
+      minimum: 1
+    total:
+      type: integer
+    totalPages:
+      type: integer
+
+SuccessResponse:
+  type: object
+  properties:
+    success:
+      type: boolean
+      example: true
+    message:
+      type: string
+
+ErrorResponse:
+  type: object
+  properties:
+    success:
+      type: boolean
+      example: false
+    message:
+      type: string
+    code:
+      type: string
+    details:
+      type: object
+      additionalProperties: true
