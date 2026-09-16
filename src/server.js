@@ -6,7 +6,7 @@ const swaggerUi = require("swagger-ui-express");
 const app = express();
 const port = process.env.PORT || 3000;
 const apiPrefix = "/api/v1";
-const apiDocsPath = path.join(__dirname, "..", "api");
+const apiDocsPath = path.join(__dirname, "..", "api_documents");
 
 app.use(cors());
 app.use(express.json());
