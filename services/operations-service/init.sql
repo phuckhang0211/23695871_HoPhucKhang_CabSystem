@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS incidents (incident_id UUID PRIMARY KEY, resource_type VARCHAR(50) NOT NULL, resource_id UUID NOT NULL, type VARCHAR(80) NOT NULL, description TEXT NOT NULL, status VARCHAR(30) NOT NULL DEFAULT 'OPEN', created_at TIMESTAMPTZ NOT NULL DEFAULT now(), resolved_at TIMESTAMPTZ);

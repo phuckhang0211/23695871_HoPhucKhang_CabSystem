@@ -1,0 +1,20 @@
+services:
+  rating-db:
+    image: postgres:16-alpine
+    environment:
+      { POSTGRES_DB: rating, POSTGRES_USER: cab, POSTGRES_PASSWORD: cab }
+    volumes:
+      [
+        "rating-data:/var/lib/postgresql/data",
+        "./init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
+      ]
+  rating-service:
+    build:
+      context: ../..
+      dockerfile: services/rating-service/Dockerfile
+    ports: ["3010:3010"]
+    environment:
+      { PORT: 3010, DATABASE_URL: postgres://cab:cab@rating-db:5432/rating }
+    depends_on: [rating-db]
+volumes:
+  rating-data:

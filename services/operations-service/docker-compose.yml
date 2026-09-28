@@ -1,0 +1,21 @@
+services:
+  operations-db:
+    image: postgres:16-alpine
+    environment:
+      { POSTGRES_DB: operations, POSTGRES_USER: cab, POSTGRES_PASSWORD: cab }
+    volumes:
+      [
+        "operations-data:/var/lib/postgresql/data",
+        "./init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
+      ]
+  operations-service:
+    build: .
+    ports: ["3011:3011"]
+    environment:
+      {
+        PORT: 3011,
+        DATABASE_URL: postgres://cab:cab@operations-db:5432/operations,
+      }
+    depends_on: [operations-db]
+volumes:
+  operations-data:

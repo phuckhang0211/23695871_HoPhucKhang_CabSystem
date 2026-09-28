@@ -1,0 +1,27 @@
+services:
+  booking-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: booking
+      POSTGRES_USER: cab
+      POSTGRES_PASSWORD: cab
+    volumes:
+      - booking-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+  booking-service:
+    build:
+      context: ../..
+      dockerfile: services/booking-service/Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      PORT: 3002
+      DATABASE_URL: postgres://cab:cab@booking-db:5432/booking
+      JWT_SECRET: ${JWT_SECRET:-local-development-secret}
+      ASSIGNMENT_SERVICE_URL: http://host.docker.internal:3008
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-local-internal-token}
+      DEFAULT_DRIVER_ID: 33333333-3333-4333-8333-333333333333
+    depends_on:
+      - booking-db
+volumes:
+  booking-data:

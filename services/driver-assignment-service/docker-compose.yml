@@ -1,0 +1,28 @@
+services:
+  driver-assignment-db:
+    image: postgres:16-alpine
+    environment:
+      {
+        POSTGRES_DB: driver_assignment,
+        POSTGRES_USER: cab,
+        POSTGRES_PASSWORD: cab,
+      }
+    volumes:
+      [
+        "driver-assignment-data:/var/lib/postgresql/data",
+        "./init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
+      ]
+  driver-assignment-service:
+    build:
+      context: ../..
+      dockerfile: services/driver-assignment-service/Dockerfile
+    ports: ["3008:3008"]
+    environment:
+      PORT: 3008
+      DATABASE_URL: postgres://cab:cab@driver-assignment-db:5432/driver_assignment
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-local-internal-token}
+      TRIP_SERVICE_URL: http://host.docker.internal:3003
+      NOTIFICATION_SERVICE_URL: http://host.docker.internal:3009
+    depends_on: [driver-assignment-db]
+volumes:
+  driver-assignment-data:

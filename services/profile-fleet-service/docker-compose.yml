@@ -1,0 +1,22 @@
+services:
+  profile-fleet-db:
+    image: postgres:16-alpine
+    environment:
+      { POSTGRES_DB: profile_fleet, POSTGRES_USER: cab, POSTGRES_PASSWORD: cab }
+    volumes:
+      [
+        "profile-fleet-data:/var/lib/postgresql/data",
+        "./init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
+      ]
+  profile-fleet-service:
+    build: .
+    ports: ["3007:3007"]
+    environment:
+      {
+        PORT: 3007,
+        DATABASE_URL: postgres://cab:cab@profile-fleet-db:5432/profile_fleet,
+        INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-local-internal-token},
+      }
+    depends_on: [profile-fleet-db]
+volumes:
+  profile-fleet-data:

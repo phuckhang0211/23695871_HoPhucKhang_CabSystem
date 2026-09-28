@@ -1,0 +1,26 @@
+services:
+  trip-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: trip
+      POSTGRES_USER: cab
+      POSTGRES_PASSWORD: cab
+    volumes:
+      - trip-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+  trip-service:
+    build:
+      context: ../..
+      dockerfile: services/trip-service/Dockerfile
+    ports:
+      - "3003:3003"
+    environment:
+      PORT: 3003
+      DATABASE_URL: postgres://cab:cab@trip-db:5432/trip
+      JWT_SECRET: ${JWT_SECRET:-local-development-secret}
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-local-internal-token}
+      PAYMENT_SERVICE_URL: http://host.docker.internal:3004
+    depends_on:
+      - trip-db
+volumes:
+  trip-data:

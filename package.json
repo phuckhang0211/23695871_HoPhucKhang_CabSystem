@@ -1,15 +1,18 @@
 {
   "name": "cab-system-api",
   "version": "1.0.0",
-  "description": "Mock backend for CAB System OpenAPI documentation.",
+  "description": "CAB System microservices gateway and local development tooling.",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node src/server.js"
+    "dev": "node src/server.js",
+    "test": "node --test"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.3",
     "swagger-ui-express": "^5.0.1"
   }
 }

@@ -1,0 +1,10 @@
+const express = require("express");
+const { requireAuth } = require("../../../../services/shared/auth");
+const controller = require("../controllers/booking.controller");
+const router = express.Router();
+router.post("/bookings", requireAuth, controller.create);
+router.get("/bookings", requireAuth, controller.list);
+router.get("/bookings/:bookingId", requireAuth, controller.get);
+router.patch("/bookings/:bookingId", requireAuth, controller.update);
+router.delete("/bookings/:bookingId", requireAuth, controller.remove);
+module.exports = router;

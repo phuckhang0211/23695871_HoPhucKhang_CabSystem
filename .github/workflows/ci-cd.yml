@@ -1,0 +1,29 @@
+name: CAB System CI/CD
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm test
+      - run: |
+          for dir in api-gateway services/auth-service services/profile-fleet-service services/driver-assignment-service services/notification-service services/rating-service services/operations-service services/reporting-service; do
+            (cd "$dir" && npm ci)
+          done
+      - run: |
+          find api-gateway services -name '*.js' -print0 | xargs -0 -n1 node --check
+  docker:
+    needs: test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose build
+      - run: docker compose config

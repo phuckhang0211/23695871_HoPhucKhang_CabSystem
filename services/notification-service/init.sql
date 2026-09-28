@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS notifications (notification_id UUID PRIMARY KEY, recipient_id UUID NOT NULL, type VARCHAR(80) NOT NULL, title TEXT NOT NULL, message TEXT NOT NULL, is_read BOOLEAN NOT NULL DEFAULT FALSE, created_at TIMESTAMPTZ NOT NULL DEFAULT now());

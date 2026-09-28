@@ -1,0 +1,253 @@
+services:
+  auth-db:
+    image: postgres:16-alpine
+    ports: ["5433:5432"]
+    environment:
+      { POSTGRES_DB: auth, POSTGRES_USER: cab, POSTGRES_PASSWORD: cab }
+    volumes:
+      [
+        "auth-data:/var/lib/postgresql/data",
+        "./services/auth-service/init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
+      ]
+  booking-db:
+    image: postgres:16-alpine
+    ports: ["5434:5432"]
+    environment:
+      { POSTGRES_DB: booking, POSTGRES_USER: cab, POSTGRES_PASSWORD: cab }
+    volumes:
+      [
+        "booking-data:/var/lib/postgresql/data",
+        "./services/booking-service/init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
+      ]
+  trip-db:
+    image: postgres:16-alpine
+    ports: ["5435:5432"]
+    environment:
+      { POSTGRES_DB: trip, POSTGRES_USER: cab, POSTGRES_PASSWORD: cab }
+    volumes:
+      [
+        "trip-data:/var/lib/postgresql/data",
+        "./services/trip-service/init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
+      ]
+  payment-db:
+    image: postgres:16-alpine
+    ports: ["5436:5432"]
+    environment:
+      { POSTGRES_DB: payment, POSTGRES_USER: cab, POSTGRES_PASSWORD: cab }
+    volumes:
+      [
+        "payment-data:/var/lib/postgresql/data",
+        "./services/payment-service/init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
+      ]
+  auth-service:
+    build: ./services/auth-service
+    environment:
+      PORT: 3001
+      DATABASE_URL: "postgres://cab:cab@auth-db:5432/auth"
+      JWT_SECRET: "${JWT_SECRET:-local-development-secret}"
+      PROFILE_FLEET_SERVICE_URL: "http://profile-fleet-service:3007"
+      INTERNAL_SERVICE_TOKEN: "${INTERNAL_SERVICE_TOKEN:-local-internal-token}"
+    depends_on: [auth-db, profile-fleet-service]
+  booking-service:
+    build:
+      context: .
+      dockerfile: services/booking-service/Dockerfile
+    environment:
+      PORT: 3002
+      DATABASE_URL: "postgres://cab:cab@booking-db:5432/booking"
+      JWT_SECRET: "${JWT_SECRET:-local-development-secret}"
+      ASSIGNMENT_SERVICE_URL: "http://driver-assignment-service:3008"
+      INTERNAL_SERVICE_TOKEN: "${INTERNAL_SERVICE_TOKEN:-local-internal-token}"
+      DEFAULT_DRIVER_ID: "33333333-3333-4333-8333-333333333333"
+    depends_on: [booking-db, driver-assignment-service]
+  trip-service:
+    build:
+      context: .
+      dockerfile: services/trip-service/Dockerfile
+    environment:
+      PORT: 3003
+      DATABASE_URL: "postgres://cab:cab@trip-db:5432/trip"
+      JWT_SECRET: "${JWT_SECRET:-local-development-secret}"
+      INTERNAL_SERVICE_TOKEN: "${INTERNAL_SERVICE_TOKEN:-local-internal-token}"
+      PAYMENT_SERVICE_URL: "http://payment-service:3004"
+    depends_on: [trip-db, payment-service]
+  payment-service:
+    build:
+      context: .
+      dockerfile: services/payment-service/Dockerfile
+    environment:
+      PORT: 3004
+      DATABASE_URL: "postgres://cab:cab@payment-db:5432/payment"
+      JWT_SECRET: "${JWT_SECRET:-local-development-secret}"
+      INTERNAL_SERVICE_TOKEN: "${INTERNAL_SERVICE_TOKEN:-local-internal-token}"
+      NOTIFICATION_SERVICE_URL: "http://notification-service:3009"
+    depends_on: [payment-db, notification-service]
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    ports: ["3000:3000"]
+    environment:
+      PORT: 3000
+      JWT_SECRET: "${JWT_SECRET:-local-development-secret}"
+      AUTH_SERVICE_URL: "http://auth-service:3001"
+      TRIP_SERVICE_URL: "http://trip-service:3003"
+      PAYMENT_SERVICE_URL: "http://payment-service:3004"
+      PROFILE_FLEET_SERVICE_URL: "http://profile-fleet-service:3007"
+      DRIVER_ASSIGNMENT_SERVICE_URL: "http://driver-assignment-service:3008"
+      NOTIFICATION_SERVICE_URL: "http://notification-service:3009"
+      RATING_SERVICE_URL: "http://rating-service:3010"
+      OPERATIONS_SERVICE_URL: "http://operations-service:3011"
+      REPORTING_SERVICE_URL: "http://reporting-service:3012"
+    depends_on:
+      [
+        auth-service,
+        booking-service,
+        trip-service,
+        payment-service,
+        profile-fleet-service,
+        driver-assignment-service,
+        notification-service,
+        rating-service,
+        operations-service,
+        reporting-service,
+      ]
+  profile-fleet-db:
+    image: postgres:16-alpine
+    ports: ["5437:5432"]
+    environment:
+      { POSTGRES_DB: profile_fleet, POSTGRES_USER: cab, POSTGRES_PASSWORD: cab }
+    volumes:
+      [
+        "profile-fleet-data:/var/lib/postgresql/data",
+        "./services/profile-fleet-service/init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
+      ]
+  profile-fleet-service:
+    build: ./services/profile-fleet-service
+    environment:
+      {
+        PORT: 3007,
+        DATABASE_URL: "postgres://cab:cab@profile-fleet-db:5432/profile_fleet",
+        INTERNAL_SERVICE_TOKEN: "${INTERNAL_SERVICE_TOKEN:-local-internal-token}",
+      }
+    depends_on: [profile-fleet-db]
+  driver-assignment-db:
+    image: postgres:16-alpine
+    ports: ["5438:5432"]
+    environment:
+      {
+        POSTGRES_DB: driver_assignment,
+        POSTGRES_USER: cab,
+        POSTGRES_PASSWORD: cab,
+      }
+    volumes:
+      [
+        "driver-assignment-data:/var/lib/postgresql/data",
+        "./services/driver-assignment-service/init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
+      ]
+  driver-assignment-service:
+    build:
+      context: .
+      dockerfile: services/driver-assignment-service/Dockerfile
+    environment:
+      {
+        PORT: 3008,
+        DATABASE_URL: "postgres://cab:cab@driver-assignment-db:5432/driver_assignment",
+        INTERNAL_SERVICE_TOKEN: "${INTERNAL_SERVICE_TOKEN:-local-internal-token}",
+        TRIP_SERVICE_URL: "http://trip-service:3003",
+        NOTIFICATION_SERVICE_URL: "http://notification-service:3009",
+      }
+    depends_on: [driver-assignment-db, trip-service, notification-service]
+  notification-db:
+    image: postgres:16-alpine
+    ports: ["5439:5432"]
+    environment:
+      { POSTGRES_DB: notification, POSTGRES_USER: cab, POSTGRES_PASSWORD: cab }
+    volumes:
+      [
+        "notification-data:/var/lib/postgresql/data",
+        "./services/notification-service/init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
+      ]
+  notification-service:
+    build:
+      context: .
+      dockerfile: services/notification-service/Dockerfile
+    environment:
+      {
+        PORT: 3009,
+        DATABASE_URL: "postgres://cab:cab@notification-db:5432/notification",
+        INTERNAL_SERVICE_TOKEN: "${INTERNAL_SERVICE_TOKEN:-local-internal-token}",
+      }
+    depends_on: [notification-db]
+  rating-db:
+    image: postgres:16-alpine
+    ports: ["5440:5432"]
+    environment:
+      { POSTGRES_DB: rating, POSTGRES_USER: cab, POSTGRES_PASSWORD: cab }
+    volumes:
+      [
+        "rating-data:/var/lib/postgresql/data",
+        "./services/rating-service/init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
+      ]
+  rating-service:
+    build:
+      context: .
+      dockerfile: services/rating-service/Dockerfile
+    environment:
+      {
+        PORT: 3010,
+        DATABASE_URL: "postgres://cab:cab@rating-db:5432/rating",
+        INTERNAL_SERVICE_TOKEN: "${INTERNAL_SERVICE_TOKEN:-local-internal-token}",
+        NOTIFICATION_SERVICE_URL: "http://notification-service:3009",
+      }
+    depends_on: [rating-db]
+  operations-db:
+    image: postgres:16-alpine
+    ports: ["5441:5432"]
+    environment:
+      { POSTGRES_DB: operations, POSTGRES_USER: cab, POSTGRES_PASSWORD: cab }
+    volumes:
+      [
+        "operations-data:/var/lib/postgresql/data",
+        "./services/operations-service/init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
+      ]
+  operations-service:
+    build: ./services/operations-service
+    environment:
+      {
+        PORT: 3011,
+        DATABASE_URL: "postgres://cab:cab@operations-db:5432/operations",
+      }
+    depends_on: [operations-db]
+  reporting-db:
+    image: postgres:16-alpine
+    ports: ["5442:5432"]
+    environment:
+      { POSTGRES_DB: reporting, POSTGRES_USER: cab, POSTGRES_PASSWORD: cab }
+    volumes:
+      [
+        "reporting-data:/var/lib/postgresql/data",
+        "./services/reporting-service/init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
+      ]
+  reporting-service:
+    build: ./services/reporting-service
+    environment:
+      {
+        PORT: 3012,
+        DATABASE_URL: "postgres://cab:cab@reporting-db:5432/reporting",
+      }
+    depends_on: [reporting-db]
+volumes:
+  auth-data:
+  booking-data:
+  trip-data:
+  payment-data:
+  profile-fleet-data:
+  driver-assignment-data:
+  notification-data:
+  rating-data:
+  operations-data:
+  reporting-data:
+networks:
+  default:
+    name: cab-network

@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS ratings (rating_id UUID PRIMARY KEY, trip_id UUID NOT NULL, rater_id UUID NOT NULL, driver_id UUID, score SMALLINT NOT NULL CHECK (score BETWEEN 1 AND 5), comment TEXT, created_at TIMESTAMPTZ NOT NULL DEFAULT now(), UNIQUE (trip_id, rater_id));

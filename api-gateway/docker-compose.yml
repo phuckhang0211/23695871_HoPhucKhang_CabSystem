@@ -1,0 +1,12 @@
+services:
+  api-gateway:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      JWT_SECRET: ${JWT_SECRET:-local-development-secret}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:-http://host.docker.internal:3001}
+      BOOKING_SERVICE_URL: ${BOOKING_SERVICE_URL:-http://host.docker.internal:3002}
+      TRIP_SERVICE_URL: ${TRIP_SERVICE_URL:-http://host.docker.internal:3003}
+      PAYMENT_SERVICE_URL: ${PAYMENT_SERVICE_URL:-http://host.docker.internal:3004}

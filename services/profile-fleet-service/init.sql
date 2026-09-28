@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS profiles (user_id UUID PRIMARY KEY, display_name VARCHAR(150) NOT NULL, phone VARCHAR(30), email VARCHAR(255), updated_at TIMESTAMPTZ NOT NULL DEFAULT now());

@@ -1,0 +1,12 @@
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE TABLE IF NOT EXISTS payments (
+  payment_id UUID PRIMARY KEY,
+  trip_id UUID NOT NULL,
+  amount NUMERIC(12,2) NOT NULL CHECK(amount >= 0),
+  currency CHAR(3) NOT NULL DEFAULT 'VND',
+  method VARCHAR(20) NOT NULL CHECK(method IN ('CASH','ELECTRONIC')),
+  status VARCHAR(20) NOT NULL CHECK(status IN ('PENDING','SUCCESS','FAILED','RETRY')),
+  idempotency_key VARCHAR(120) NOT NULL UNIQUE,
+  transaction_id VARCHAR(150),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

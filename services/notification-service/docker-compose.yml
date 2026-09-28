@@ -1,0 +1,22 @@
+services:
+  notification-db:
+    image: postgres:16-alpine
+    environment:
+      { POSTGRES_DB: notification, POSTGRES_USER: cab, POSTGRES_PASSWORD: cab }
+    volumes:
+      [
+        "notification-data:/var/lib/postgresql/data",
+        "./init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
+      ]
+  notification-service:
+    build:
+      context: ../..
+      dockerfile: services/notification-service/Dockerfile
+    ports: ["3009:3009"]
+    environment:
+      PORT: 3009
+      DATABASE_URL: "postgres://cab:cab@notification-db:5432/notification"
+      INTERNAL_SERVICE_TOKEN: "${INTERNAL_SERVICE_TOKEN:-local-internal-token}"
+    depends_on: [notification-db]
+volumes:
+  notification-data:
